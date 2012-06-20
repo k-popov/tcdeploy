@@ -17,15 +17,51 @@ deploy_url = node[:tcdeploy][:tomcat_manager_url] + \
 # prepare the auth header
 manager_basic_auth = Base64.encode64("#{node[:tcdeploy][:tomcat_manager_user]}:#{node[:tcdeploy][:tomcat_manager_password]}")
 
-Chef::Log.debug("Deploying the app with URL: #{deploy_url}")
+Chef::Log.info("Deploying the app with URL: #{deploy_url}")
 
 # deploy the application
-http_request "Deploy_apptication_with_manager" do
-    url deploy_url
-    action :get
-    headers( {"Authorization" => "Basic #{manager_basic_auth}"} )
-    message ""
+
+# Chef 0.8.16 doesn't support 'headers" parameter in http_request resource
+# This is why I have to use ruby_block
+
+ruby_block "Deploy_apptication_with_manager" do
+    block do
+#        require 'net/http'
+#        uri = URI(deploy_url)
+#        req = Net::HTTP::Get.new(uri.request_uri)
+#        req.basic_auth node[:tcdeploy][:tomcat_manager_user], node[:tcdeploy][:tomcat_manager_password]
+#
+#        res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+#            http.request(req)
+#        end
+#        Chef::Log.info("Deploy result is#{res.body}")
+
+        retry_count = 0
+        max_retries = 10
+        # wait if the server is not yet ready
+        begin
+            sleep(1)
+            open(deploy_url, "Authorization" => "Basic #{manager_basic_auth}") do |depl|
+                depl.each_line do |resp_line|
+                    Chef::Log.info("Deploy result is #{resp_line}")
+                end
+            end
+            # exit the loop if the request was successfull
+            retry_count = 777
+        rescue
+            retry_count += 1
+            Chef::Log.debug("Failed to connect to Tomcat manager")
+        end while retry_count < max_retries
+    end
+    action :create
 end
+
+#http_request "Deploy_apptication_with_manager" do
+#    url deploy_url
+#    action :get
+#    headers( {"Authorization" => "Basic #{manager_basic_auth}"} )
+#    message ""
+#end
 
 # perform some cleanup
 directory "#{deploy_tmp_dir}" do
