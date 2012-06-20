@@ -1,7 +1,7 @@
 # Prepare a temporary directory
 require 'tmpdir'
 deploy_tmp_dir = Dir.mktmpdir
-File::chmod(0777, setup_tmp_dir)
+File::chmod(0777, deploy_tmp_dir)
 
 # download the application .war file to temporary directory
 remote_file "#{deploy_tmp_dir}/#{node[:tcdeploy][:app_name]}.war" do
