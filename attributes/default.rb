@@ -5,7 +5,7 @@ default[:tcdeploy][:app_name] = node[:tcdeploy][:app_download_url].split('/')[-1
 # application context. Default is application file name.
 # (i.e. if node[:tcdeploy][:app_context] = "myapp"
 # the application will be available at http://server.com:8080/myapp )
-default[:tcdeploy][:app_context] = node[:tcdeploy][:app_name]
+default[:tcdeploy][:app_context] = "/#{node[:tcdeploy][:app_name]}"
 
 
 # URL of tomcat web-manager
