@@ -17,7 +17,7 @@ deploy_url = node[:tcdeploy][:tomcat_manager_url] + \
 # prepare the auth header
 manager_basic_auth = Base64.encode64("#{node[:tcdeploy][:tomcat_manager_user]}:#{node[:tcdeploy][:tomcat_manager_password]}")
 
-Chef::log.debug("Deploying the app with URL: #{deploy_url}")
+Chef::Log.debug("Deploying the app with URL: #{deploy_url}")
 
 # deploy the application
 http_request "Deploy_apptication_with_manager" do
