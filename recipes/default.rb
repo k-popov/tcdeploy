@@ -9,9 +9,12 @@ remote_file "#{deploy_tmp_dir}/#{node[:tcdeploy][:app_name]}.war" do
     mode "0755"
 end
 
+
+# check if context contains '/' at the begining
+context = node[:tcdeploy][:app_context].match(/^\//) ? node[:tcdeploy][:app_context] : "/#{node[:tcdeploy][:app_context]}"
 # prepare the deployment URL
 deploy_url = node[:tcdeploy][:tomcat_manager_url] + \
-             "/deploy?path=" + node[:tcdeploy][:app_context] + \
+             "/deploy?path=" + context + \
              "&war=file:" + deploy_tmp_dir + "/" + \
               node[:tcdeploy][:app_name] + ".war"
 # prepare the auth header
