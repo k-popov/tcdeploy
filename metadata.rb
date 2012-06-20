@@ -7,3 +7,5 @@ version           "0.1"
   supports os
 end
 
+depends           "tomcat6"
+

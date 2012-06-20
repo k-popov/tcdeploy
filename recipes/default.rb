@@ -1,3 +1,8 @@
+# install tomcat6 before deploying smth
+if node[:tcdeploy][:install_tomcat6]
+    include_recipe "tomcat6::default"
+end
+
 # Prepare a temporary directory
 require 'tmpdir'
 deploy_tmp_dir = Dir.mktmpdir

@@ -1,3 +1,6 @@
+# install tomcat before deploying?
+default[:tcdeploy][:install_tomcat6] = true
+
 # URL to download the application .war file from
 default[:tcdeploy][:app_download_url] = "http://example.com/my_app.war"
 # name of the application
