@@ -45,7 +45,7 @@ ruby_block "Deploy_apptication_with_manager" do
                 end
             end
             # exit the loop if the request was successfull
-            retry_count = 777
+            retry_count = max_retries + 1
         rescue
             retry_count += 1
             Chef::Log.debug("Failed to connect to Tomcat manager. Retrying")
